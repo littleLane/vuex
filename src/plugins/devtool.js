@@ -3,6 +3,7 @@ const target = typeof window !== 'undefined'
   : typeof global !== 'undefined'
     ? global
     : {}
+    
 const devtoolHook = target.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
 export default function devtoolPlugin (store) {

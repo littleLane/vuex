@@ -232,6 +232,12 @@ export class Store {
     })
   }
 
+  /**
+   * 动态的注册模块
+   * @param {*} path 
+   * @param {*} rawModule 
+   * @param {*} options 
+   */
   registerModule (path, rawModule, options = {}) {
     if (typeof path === 'string') path = [path]
 
@@ -246,6 +252,10 @@ export class Store {
     resetStoreVM(this, this.state)
   }
 
+  /**
+   * 卸载指定的模块
+   * @param {*} path 
+   */
   unregisterModule (path) {
     if (typeof path === 'string') path = [path]
 
@@ -254,10 +264,12 @@ export class Store {
     }
 
     this._modules.unregister(path)
+
     this._withCommit(() => {
       const parentState = getNestedState(this.state, path.slice(0, -1))
       Vue.delete(parentState, path[path.length - 1])
     })
+    
     resetStore(this)
   }
 
@@ -284,12 +296,20 @@ export class Store {
   }
 }
 
+/**
+ * 添加函数，返回 unsubscribe
+ * @param {*} fn 
+ * @param {*} subs 
+ * @param {*} options 
+ */
 function genericSubscribe (fn, subs, options) {
   if (subs.indexOf(fn) < 0) {
     options && options.prepend
       ? subs.unshift(fn)
       : subs.push(fn)
   }
+
+  // 返回 unsubscribe
   return () => {
     const i = subs.indexOf(fn)
     if (i > -1) {
